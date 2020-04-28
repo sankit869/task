@@ -25,7 +25,7 @@ public class curdUtils{
 		response = given().when().get(request);
 			return response;
 	}
-	public io.restassured.response.Response postRequestBasic(String request, String filename) {
+	public Response postRequestBasic(String request, String filename) {
 			response = given().contentType("application/json").
 					body(new File(System.getProperty("user.dir")+"/testdata//inputjson//"+filename))
 					.post(request);
