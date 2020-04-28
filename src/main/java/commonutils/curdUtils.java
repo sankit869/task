@@ -3,6 +3,8 @@ package commonutils;
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
 
+import java.io.File;
+
 
 public class curdUtils{
 	public static curdUtils curd;
@@ -23,13 +25,17 @@ public class curdUtils{
 		response = given().when().get(request);
 			return response;
 	}
-	public io.restassured.response.Response postRequestBasic(String request, String payload) {
-			response = given().contentType("application/json").body(payload).post(request);
+	public io.restassured.response.Response postRequestBasic(String request, String filename) {
+			response = given().contentType("application/json").
+					body(new File(System.getProperty("user.dir")+"/testdata//inputjson//"+filename))
+					.post(request);
 			return response;
 	}
 
-	public Response putRequest(String url, String payLoad, String header, String headerVal) {
-			response = given().header(header,headerVal).contentType("application/json").body(payLoad).put(url);
+	public Response putRequest(String url, String filename, String header, String headerVal) {
+			response = given().header(header,headerVal).contentType("application/json").
+					body(new File(System.getProperty("user.dir")+"/testdata//inputjson//"+filename))
+					.put(url);
 			return response;
 	}
 	public Response deleteRequest(String url, String header, String headerVal) {

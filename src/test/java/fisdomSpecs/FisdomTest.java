@@ -1,6 +1,7 @@
 package fisdomSpecs;
 
 import commonutils.curdUtils;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,13 +18,13 @@ public class FisdomTest extends  BaseTest implements EndPoint{
 
     @BeforeClass
     public void getToken(){
-        response=curdUtils.getinstance().postRequestBasic(EndPoint.AUTH,fisdomService.authPaylod());
+        response=curdUtils.getinstance().postRequestBasic(EndPoint.AUTH,"auth.json");
         token = response.getBody().jsonPath().get("token");
     }
 
     @Test(priority=1)
     public void createBooking(){
-        response=curdUtils.getinstance().postRequestBasic(EndPoint.CREATEBOOKING,fisdomService.payload());
+        response=curdUtils.getinstance().postRequestBasic(EndPoint.CREATEBOOKING,"createbooking.json");
         bookingid = response.body().jsonPath().get("bookingid");
         response.then().assertThat().statusCode(200);
         softAssert.assertEquals(response.getBody().jsonPath().get("booking.firstname"),"Test");
@@ -35,11 +36,10 @@ public class FisdomTest extends  BaseTest implements EndPoint{
         softAssert.assertEquals(response.getBody().jsonPath().get("booking.bookingdates.checkout"),"2020-05-03");
         softAssert.assertAll();
 
-
     }
     @Test
     public void createBookingwithoutAdditionalneeds(){
-        response=curdUtils.getinstance().postRequestBasic(EndPoint.CREATEBOOKING,fisdomService.payloadWithoutAdditionalneeds());
+        response=curdUtils.getinstance().postRequestBasic(EndPoint.CREATEBOOKING,"createbooking.json");
         response.then().assertThat().statusCode(200);
         softAssert.assertEquals(response.getBody().jsonPath().get("booking.firstname"),"Test");
         softAssert.assertEquals(response.getBody().jsonPath().get("booking.lastname"),"Automation");
@@ -67,17 +67,17 @@ public class FisdomTest extends  BaseTest implements EndPoint{
     }
     @Test(priority=3)
     public void TestUpdateBooking(){
-        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+bookingid, fisdomService.payloadUpdate(),"Cookie","token="+token);
+        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+bookingid, "updatebooking.json","Cookie","token="+token);
         response.then().assertThat().statusCode(200);
     }
     @Test(priority=4)
     public void TestUpdatePartialBooking(){
-        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+bookingid, fisdomService.payloadUpdatePartial(),"Cookie","token="+token);
+        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+bookingid, "partialupdatebooking.json","Cookie","token="+token);
         response.then().assertThat().statusCode(200);
     }
     @Test(priority = 5)
     public void TestUpdatewithInvalidBooking(){
-        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+rand, fisdomService.payload(),"Cookie","token="+token);
+        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+rand, "partialupdatebooking.json","Cookie","token="+token);
         response.then().assertThat().statusCode(405);
         // here http code should be 404 api should not handle.
     }
@@ -98,7 +98,7 @@ public class FisdomTest extends  BaseTest implements EndPoint{
     }
     @Test
     public void TestUpdatewithInvalidToken(){
-        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+rand, fisdomService.payload(),"Cookie","token=abc");
+        response = curdUtils.getinstance().putRequest(EndPoint.GETBOOKING+rand, "partialupdatebooking.json","Cookie","token=abc");
         response.then().assertThat().statusCode(403);
     }
 
