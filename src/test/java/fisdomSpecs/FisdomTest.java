@@ -1,11 +1,13 @@
 package fisdomSpecs;
 
+import commonutils.Utils;
 import commonutils.curdUtils;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class FisdomTest extends  BaseTest implements EndPoint{
